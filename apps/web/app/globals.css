@@ -1,12 +1,18 @@
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  /* Vercel-style: neutral palette, tight radius. Font from GeistSans on html. */
+  --font-sans: system-ui, sans-serif;
+  --background: #fafafa;
+  --foreground: #171717;
   --muted: #737373;
+  --muted-foreground: #a3a3a3;
   --border: #e5e5e5;
-  --primary: #0a0a0a;
-  --primary-hover: #262626;
-  --focus-ring: 2px solid #0a0a0a;
-  --radius: 8px;
+  --input: #f5f5f5;
+  --primary: #171717;
+  --primary-hover: #404040;
+  --focus-ring: 2px solid #171717;
+  --radius: 6px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --card: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -14,10 +20,14 @@
     --background: #0a0a0a;
     --foreground: #fafafa;
     --muted: #a3a3a3;
+    --muted-foreground: #737373;
     --border: #262626;
+    --input: #171717;
     --primary: #fafafa;
     --primary-hover: #e5e5e5;
     --focus-ring: 2px solid #fafafa;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --card: #171717;
   }
 }
 
@@ -40,7 +50,8 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -75,7 +86,7 @@ button:focus-visible,
   padding: 0.5rem 1rem;
   background: var(--primary);
   color: var(--background);
-  font-weight: 600;
+  font-weight: 500;
   border-radius: var(--radius);
   z-index: 100;
   transition: top 0.2s;

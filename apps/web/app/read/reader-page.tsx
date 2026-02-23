@@ -78,18 +78,18 @@ export function ReaderPage({
   }, [id]);
 
   useEffect(() => {
-    if (!playing || words.length === 0 || index >= words.length) {
-      if (index >= words.length && words.length > 0) setPlaying(false);
+    if (!playing || words.length === 0 || index >= words.length - 1) {
+      if (index >= words.length - 1 && words.length > 0) setPlaying(false);
       return;
     }
     const delay = 60_000 / wpm;
-    const t = setTimeout(() => setIndex((i) => i + 1), delay);
+    const t = setTimeout(() => setIndex((i) => Math.min(i + 1, words.length - 1)), delay);
     return () => clearTimeout(t);
   }, [playing, index, words.length, wpm]);
 
   const togglePlay = useCallback(() => {
     if (words.length === 0) return;
-    if (index >= words.length) setIndex(0);
+    if (index >= words.length - 1) setIndex(0);
     setPlaying((p) => !p);
   }, [words.length, index]);
 
@@ -103,8 +103,9 @@ export function ReaderPage({
     if (typeof window !== "undefined") localStorage.setItem(WPM_STORAGE_KEY, String(value));
   }, []);
 
-  const currentWord = useMemo(() => (words[index] ?? "").trim(), [words, index]);
-  const progress = words.length ? Math.round((index / words.length) * 100) : 0;
+  const displayIndex = Math.min(index, words.length - 1);
+  const currentWord = useMemo(() => (words[displayIndex] ?? "").trim(), [words, displayIndex]);
+  const progress = words.length ? Math.round(((displayIndex + 1) / words.length) * 100) : 0;
 
   if (status === "empty" && !id) {
     return (
@@ -191,7 +192,7 @@ export function ReaderPage({
           </button>
         </div>
         <p className={styles.progress} aria-live="polite">
-          {index + 1} / {words.length} · {progress}%
+          {displayIndex + 1} / {words.length} · {Math.min(progress, 100)}%
         </p>
       </header>
 

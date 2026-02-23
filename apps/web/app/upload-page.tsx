@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import styles from "./upload-page.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -14,10 +14,35 @@ export function UploadPage() {
   const [contentId, setContentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const upload = useCallback(async (file: File) => {
+  const ingestText = useCallback(async (text: string) => {
     setError(null);
     setStatus("uploading");
+    try {
+      const res = await fetch(`${API_URL}/ingest/text`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: text.trim() }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail ?? `Failed: ${res.status}`);
+      }
+      const data = await res.json();
+      setContentId(data.id);
+      setStatus("success");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed");
+      setStatus("error");
+    }
+  }, []);
+
+  const uploadFile = useCallback(async (file: File) => {
+    setError(null);
+    setStatus("uploading");
+    setPastedText("");
     const form = new FormData();
     form.append("file", file);
     try {
@@ -43,9 +68,9 @@ export function UploadPage() {
       e.preventDefault();
       setDrag(false);
       const file = e.dataTransfer.files[0];
-      if (file) upload(file);
+      if (file) uploadFile(file);
     },
-    [upload]
+    [uploadFile]
   );
 
   const onDragOver = useCallback((e: React.DragEvent) => {
@@ -58,50 +83,74 @@ export function UploadPage() {
     setDrag(false);
   }, []);
 
-  const onInputChange = useCallback(
+  const onFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (file) upload(file);
+      if (file) uploadFile(file);
       e.target.value = "";
     },
-    [upload]
+    [uploadFile]
   );
+
+  const onPaste = useCallback((e: React.ClipboardEvent) => {
+    const text = e.clipboardData.getData("text");
+    if (text) setPastedText((prev) => prev + text);
+  }, []);
+
+  const startReading = useCallback(() => {
+    const trimmed = pastedText.trim();
+    if (contentId) {
+      window.location.href = `/read?id=${encodeURIComponent(contentId)}`;
+      return;
+    }
+    if (trimmed) ingestText(trimmed);
+  }, [contentId, pastedText, ingestText]);
+
+  const hasPastedText = pastedText.trim().length > 0;
+  const isReady = status === "success" && contentId;
 
   return (
     <div className={styles.wrapper}>
-      <h2 className={styles.title}>Upload a document</h2>
+      <h2 className={styles.title}>Add content to read</h2>
       <p className={styles.hint}>
-        PDF, DOCX, or images. We extract text so you can speed-read it.
+        Drop a file, paste text (Ctrl+V), or browse. One box, one button.
       </p>
 
       <div
-        className={`${styles.dropzone} ${drag ? styles.dragActive : ""} ${status === "uploading" ? styles.uploading : ""}`}
+        className={`${styles.unifiedBox} ${drag ? styles.dragActive : ""} ${status === "uploading" ? styles.uploading : ""}`}
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        aria-describedby="dropzone-hint"
       >
         <input
-          id="file-input"
+          ref={fileInputRef}
           type="file"
           accept={ACCEPT}
-          onChange={onInputChange}
+          onChange={onFileChange}
           disabled={status === "uploading"}
-          className={styles.input}
-          aria-label="Choose a file to upload"
+          className={styles.fileInput}
+          aria-label="Choose a file"
         />
-        <label htmlFor="file-input" className={styles.label}>
-          {status === "uploading" ? (
-            "Extracting text…"
-          ) : (
-            <>
-              Drag and drop here, or <span className={styles.browse}>browse</span>
-            </>
-          )}
-        </label>
-        <p id="dropzone-hint" className={styles.srOnly}>
-          Accepted: PDF, DOCX, DOC, PNG, JPG, GIF, WebP, TIFF, BMP
-        </p>
+        <textarea
+          className={styles.textarea}
+          placeholder="Paste or type text here… or drop a file"
+          value={pastedText}
+          onChange={(e) => setPastedText(e.target.value)}
+          onPaste={onPaste}
+          disabled={status === "uploading"}
+          rows={6}
+          aria-label="Paste or type text to speed-read"
+        />
+        <div className={styles.browseRow}>
+          <button
+            type="button"
+            className={styles.browseButton}
+            onClick={() => fileInputRef.current?.click()}
+            disabled={status === "uploading"}
+          >
+            Browse for file
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -110,16 +159,22 @@ export function UploadPage() {
         </p>
       )}
 
-      {status === "success" && contentId && (
-        <div className={styles.success} role="status">
-          <p>Ready to read.</p>
-          <Link
-            href={`/read?id=${encodeURIComponent(contentId)}`}
-            className={styles.primaryButton}
-          >
-            Start reading
-          </Link>
-        </div>
+      {isReady ? (
+        <Link
+          href={`/read?id=${encodeURIComponent(contentId!)}`}
+          className={styles.primaryButton}
+        >
+          Start reading
+        </Link>
+      ) : (
+        <button
+          type="button"
+          className={styles.primaryButton}
+          onClick={startReading}
+          disabled={!hasPastedText || status === "uploading"}
+        >
+          {status === "uploading" ? "Preparing…" : hasPastedText ? "Start reading" : "Paste or add a file first"}
+        </button>
       )}
     </div>
   );

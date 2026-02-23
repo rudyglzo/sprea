@@ -3,9 +3,14 @@ from uuid import uuid4
 
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from app.extract import extract_text
 from app.store import content_store
+
+
+class IngestTextBody(BaseModel):
+    text: str
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".tiff", ".bmp"}
 
@@ -59,6 +64,16 @@ async def ingest(file: UploadFile = File(...)):
         raise HTTPException(status_code=422, detail=f"Extraction failed: {str(e)}")
     content_store.set(content_id, {"text": text, "filename": file.filename or "document"})
     return {"id": content_id, "status": "ready", "text": text, "filename": file.filename}
+
+
+@app.post("/ingest/text")
+def ingest_text(body: IngestTextBody):
+    text = (body.text or "").strip()
+    if not text:
+        raise HTTPException(status_code=400, detail="Text is required")
+    content_id = str(uuid4())
+    content_store.set(content_id, {"text": text, "filename": "pasted"})
+    return {"id": content_id, "status": "ready", "text": text, "filename": "pasted"}
 
 
 @app.get("/content/{content_id}")
