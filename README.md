@@ -1,136 +1,87 @@
-readfasterthanyoucanthink
-# Turborepo starter
+# Sprea
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Read faster than you can think.**
 
-## Using this example
+Sprea is an intelligent study assistant: upload documents (PDF, DOCX, images), extract text, and speed-read with an RSVP (Rapid Serial Visual Presentation) reader—one word at a time, no left-to-right scanning.
 
-Run the following command:
+## Tech stack
 
-```sh
-npx create-turbo@latest
+- **Frontend**: Next.js (TypeScript) — [apps/web](apps/web)
+- **Backend**: FastAPI (Python) with [uv](https://docs.astral.sh/uv/) — [apps/api](apps/api)
+- **Monorepo**: Turborepo + pnpm
+- **Extraction**: PyMuPDF (PDF), python-docx (DOCX), Pillow + pytesseract (images, optional; requires [Tesseract](https://github.com/tesseract-ocr/tesseract) installed)
+
+## Prerequisites
+
+- Node.js 18+, pnpm
+- Python 3.11+, [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- For image OCR: Tesseract installed on your system
+
+## Quick start
+
+```bash
+# Install JS dependencies
+pnpm install
+
+# Run API (from repo root; requires uv on PATH)
+pnpm --filter api dev
+
+# In another terminal: run web app
+pnpm --filter web dev
 ```
 
-## What's inside?
+Then open [http://localhost:3000](http://localhost:3000). Upload a document, then click **Start reading** to use the RSVP reader.
 
-This Turborepo includes the following packages/apps:
+To run both API and web together (each in its own process):
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm dev
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+This starts web (port 3000), docs (3001), and api (8000). To run only web + api:
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+pnpm exec turbo run dev --filter=web --filter=api
 ```
 
-### Develop
+## Environment
 
-To develop all apps and packages, run the following command:
+Optional: copy [.env.example](.env.example) to `.env.local` in the repo root or in `apps/web` if you need to override the API URL:
 
-```
-cd my-turborepo
+- `NEXT_PUBLIC_API_URL` — default `http://localhost:8000`
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+## Project structure
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+| Path | Description |
+|------|-------------|
+| [apps/web](apps/web) | Next.js app — upload UI and RSVP reader |
+| [apps/api](apps/api) | FastAPI app — ingest + extract, `GET /content/:id` |
+| [apps/docs](apps/docs) | Next.js docs app (for future use: store/reread docs) |
+| [packages/ui](packages/ui) | Shared React components |
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Build
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+pnpm build
 ```
 
-### Remote Caching
+Builds all apps. To build only web or api:
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+pnpm exec turbo run build --filter=web
+pnpm exec turbo run build --filter=api
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## API-only (Python)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+cd apps/api
+uv sync
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
-## Useful Links
+- **Endpoints**: `GET /health`, `POST /ingest`, `GET /content/{id}`
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+*Sprea — polyglot monorepo (Next.js + FastAPI, Turborepo + uv). No account required; content is in-memory and cleared on API restart.*
