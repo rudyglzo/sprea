@@ -10,4 +10,4 @@ ssh_key_name = "your-ssh-key-name-in-do"
 # Optional overrides:
 # droplet_name = "sprea"
 # region       = "atl1"
-# droplet_size = "s-1vcpu-1gb"
+# droplet_size = "s-1vcpu-1gb-35gb-intel"
