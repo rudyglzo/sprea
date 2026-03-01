@@ -5,21 +5,12 @@ FROM node:20-alpine AS base
 RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 WORKDIR /app
 
-# --- Dependencies ---
-FROM base AS deps
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY packages/ ./packages/
-COPY apps/web/package.json ./apps/web/
-RUN pnpm install --frozen-lockfile
-
 # --- Build ---
 FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages ./packages
 COPY . .
-# NEXT_PUBLIC_API_URL is baked in at build time (use your droplet IP or domain in production)
 ARG NEXT_PUBLIC_API_URL=http://localhost:8000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+RUN pnpm install --frozen-lockfile
 RUN pnpm build --filter=web
 
 # --- Production ---
