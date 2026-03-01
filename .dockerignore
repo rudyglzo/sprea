@@ -1,0 +1,30 @@
+# Dependencies and build artifacts
+node_modules
+.pnp
+.pnp.js
+.turbo
+.next
+out
+build
+dist
+apps/api/.venv
+*.pyc
+
+# Git and IDE
+.git
+.gitignore
+.vscode
+.DS_Store
+
+# Env (use build args / compose env instead)
+.env
+.env.*
+!.env.example
+
+# Docs and infra (not needed in images)
+*.md
+infra/
+
+# Terraform state
+*.tfstate
+*.tfstate.*

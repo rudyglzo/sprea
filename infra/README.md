@@ -1,11 +1,11 @@
-# Sprea Infrastructure
+# Sprea Infrastructure v1
 
 Learning path for deploying Sprea to a self-managed DigitalOcean droplet: Terraform → Ansible → Docker → Kubernetes → CI/CD.
 
 ## Pipeline overview
 
 ```
-Terraform → Ansible → Docker → K8s → CI/CD
+Terraform → Ansible → Docker → K3s → CI/CD
    ↓           ↓         ↓       ↓       ↓
   VM        config    images   deploy   automate
 ```
@@ -37,13 +37,21 @@ cp inventory.example inventory
 ansible-playbook -i inventory playbook.yml
 ```
 
-## Step 3: Docker (coming next)
+## Step 3: Docker
 
-Build images for `apps/api` and `apps/web`, push to a registry.
+Build and run Sprea in containers. See **[docker/README.md](docker/README.md)** for the full guide.
 
-## Step 4: Kubernetes (coming next)
+**Quick start (local):**
+```bash
+cd /path/to/sprea
+docker compose up --build
+```
 
-Deploy containers to the cluster (k3s or similar).
+**Deploy:** `.env` + `docker compose up --build -d` (build on droplet) or `docker compose pull && docker compose up -d` (pull from registry). HTTPS: [caddy/README.md](caddy/README.md).
+
+## Step 4: Kubernetes (k3s)
+
+Deploy to k3s. See **[k3s/README.md](k3s/README.md)**.
 
 ## Step 5: CI/CD (coming next)
 
