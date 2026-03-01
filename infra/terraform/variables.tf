@@ -18,13 +18,13 @@ variable "droplet_name" {
 variable "region" {
   description = "DigitalOcean region (e.g. nyc1, sfo3, sgp1)"
   type        = string
-  default     = "atl1"
+  default     = "nyc3"
 }
 
 variable "droplet_size" {
   description = "Droplet size slug. s-1vcpu-1gb = $6/mo, s-1vcpu-2gb = $12/mo"
   type        = string
-  default     = "s-1vcpu-1gb"
+  default     = "s-1vcpu-2gb"
 }
 
 variable "droplet_image" {
