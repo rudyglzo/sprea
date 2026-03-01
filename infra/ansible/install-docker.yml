@@ -1,18 +1,3 @@
-# =============================================================================
-# Sprea Ansible Playbook - Configure the droplet
-# =============================================================================
-# Run after Terraform creates the droplet. This playbook:
-#   1. Installs Docker
-#   2. Optionally installs k3s (lightweight Kubernetes) - uncomment if needed
-#
-# Usage:
-#   cd infra/ansible
-#   ansible-playbook -i inventory playbook.yml
-#
-# Inventory: create inventory from droplet IP:
-#   echo "YOUR_DROPLET_IP ansible_user=root" > inventory
-# =============================================================================
-
 - name: Configure Docker droplet
   hosts: all
   become: true
