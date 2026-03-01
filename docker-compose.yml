@@ -1,0 +1,26 @@
+# Sprea
+# Local:  docker compose up --build
+# Deploy: .env with NEXT_PUBLIC_API_URL, CORS_ORIGINS. Then: pull && up -d
+
+services:
+  api:
+    image: rglz0/sprea-api:latest
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+
+  web:
+    image: rglz0/sprea-web:latest
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api

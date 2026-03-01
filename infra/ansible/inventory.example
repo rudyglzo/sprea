@@ -1,0 +1,9 @@
+# Copy to inventory and replace with your droplet IP from terraform output:
+#   cp inventory.example inventory
+#   terraform -chdir=../terraform output droplet_ip
+#   # Edit inventory and paste the IP below
+#
+# Format: IP_or_hostname ansible_user=root
+# Use root for DO droplets by default; or ansible_user=ubuntu if you use ubuntu user
+
+YOUR_DROPLET_IP ansible_user=root
