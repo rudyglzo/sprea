@@ -1,0 +1,81 @@
+---
+# Install Caddy reverse proxy + automatic HTTPS
+# Vars: sprea_domain (required), sprea_web_port (default 3000), sprea_api_port (default 8000)
+# For k3s: sprea_web_port=30081, sprea_api_port=30080
+
+- name: Install and configure Caddy
+  hosts: all
+  become: true
+  vars:
+    sprea_web_port: 3000
+    sprea_api_port: 8000
+
+  tasks:
+    - name: Install Caddy dependencies
+      apt:
+        name:
+          - debian-keyring
+          - debian-archive-keyring
+          - apt-transport-https
+          - curl
+        state: present
+
+    - name: Add Caddy GPG key to keyring
+      shell: |
+        curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+      args:
+        creates: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+
+    - name: Add Caddy apt repository
+      get_url:
+        url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
+        dest: /etc/apt/sources.list.d/caddy-stable.list
+        mode: "0644"
+        force: true
+
+    - name: Fix keyring and list permissions
+      file:
+        path: "{{ item }}"
+        mode: "0644"
+      loop:
+        - /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+        - /etc/apt/sources.list.d/caddy-stable.list
+
+    - name: Install Caddy
+      apt:
+        name: caddy
+        state: present
+        update_cache: true
+
+    - name: Ensure Caddy service is started
+      service:
+        name: caddy
+        state: started
+        enabled: true
+
+    - name: Deploy Caddyfile
+      template:
+        src: Caddyfile.j2
+        dest: /etc/caddy/Caddyfile
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart Caddy
+
+    - name: Flush handlers
+      meta: flush_handlers
+
+    - name: Verify Caddy is running
+      command: caddy version
+      register: caddy_version
+      changed_when: false
+
+    - name: Print Caddy version
+      debug:
+        msg: "{{ caddy_version.stdout }}"
+
+  handlers:
+    - name: Restart Caddy
+      service:
+        name: caddy
+        state: restarted
