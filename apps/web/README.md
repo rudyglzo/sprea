@@ -18,7 +18,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Geist, a custom font.
+
+## Customization
+
+**Favicon:** Replace `app/favicon.ico` with your own icon. Next.js serves it automatically.
+
+## Data flow (pasted text & files)
+
+- **Pasted text:** `POST /ingest/text` with `{ text }` → API stores in memory, returns `{ id }` → frontend navigates to `/read?id=...`
+- **Files:** `POST /ingest` with `FormData` → API extracts text (pytesseract for images, pdfminer for PDF, python-docx for DOCX), stores in memory, returns `{ id }` → frontend navigates to `/read?id=...`
+- **Reading:** `GET /content/{id}` returns `{ text, filename }` → RSVP reader displays words. Content is in-memory only (cleared on API restart).
 
 ## Learn More
 
