@@ -1,6 +1,6 @@
 .wrapper {
   width: 100%;
-  max-width: 40rem;
+  max-width: 80rem;
   align-self: center;
   display: flex;
   flex-direction: column;
@@ -11,11 +11,11 @@
 
 .unifiedBox {
   width: 100%;
-  max-width: 40rem;
+  max-width: 80rem;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--card);
-  padding: 1.5rem;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -73,7 +73,7 @@
   border: none;
   border-radius: 0;
   resize: none;
-  min-height: 8rem;
+  min-height: 28rem;
 }
 
 .textarea::placeholder {

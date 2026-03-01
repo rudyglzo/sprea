@@ -150,7 +150,7 @@ export function UploadPage() {
             value={pastedText}
             onChange={(e) => setPastedText(e.target.value)}
             disabled={status === "uploading"}
-            rows={6}
+            rows={19}
             aria-label="Paste or type text to speed-read"
           />
         </div>
