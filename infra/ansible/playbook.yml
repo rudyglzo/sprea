@@ -1,0 +1,9 @@
+---
+# Master playbook: Docker + k3s + Caddy
+# Run: ansible-playbook -i inventory playbook.yml -e sprea_domain=sprea.live
+# Docker Compose only: add -e sprea_web_port=3000 -e sprea_api_port=8000
+# k3s (default): -e sprea_web_port=30081 -e sprea_api_port=30080
+
+- import_playbook: install-docker.yml
+- import_playbook: install-k3s.yml
+- import_playbook: install-caddy.yml
