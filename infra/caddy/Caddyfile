@@ -1,0 +1,9 @@
+# Replace YOUR_DOMAIN with your domain (e.g. sprea.live)
+# Copy to /etc/caddy/Caddyfile on droplet
+
+YOUR_DOMAIN {
+    reverse_proxy localhost:3000
+}
+api.YOUR_DOMAIN {
+    reverse_proxy localhost:8000
+}

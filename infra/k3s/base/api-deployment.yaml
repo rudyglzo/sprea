@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprea-api
+  labels:
+    app: sprea-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprea-api
+  template:
+    metadata:
+      labels:
+        app: sprea-api
+    spec:
+      containers:
+        - name: api
+          image: rglz0/sprea-api:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: sprea-config
+                  key: CORS_ORIGINS

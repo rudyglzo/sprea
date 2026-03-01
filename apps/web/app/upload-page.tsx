@@ -92,11 +92,6 @@ export function UploadPage() {
     [uploadFile]
   );
 
-  const onPaste = useCallback((e: React.ClipboardEvent) => {
-    const text = e.clipboardData.getData("text");
-    if (text) setPastedText((prev) => prev + text);
-  }, []);
-
   const startReading = useCallback(() => {
     const trimmed = pastedText.trim();
     if (contentId) {
@@ -136,7 +131,6 @@ export function UploadPage() {
           placeholder="Paste or type text here… or drop a file"
           value={pastedText}
           onChange={(e) => setPastedText(e.target.value)}
-          onPaste={onPaste}
           disabled={status === "uploading"}
           rows={6}
           aria-label="Paste or type text to speed-read"
@@ -179,3 +173,4 @@ export function UploadPage() {
     </div>
   );
 }
+
