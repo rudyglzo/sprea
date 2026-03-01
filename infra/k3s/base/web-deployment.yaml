@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sprea-web
+  labels:
+    app: sprea-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sprea-web
+  template:
+    metadata:
+      labels:
+        app: sprea-web
+    spec:
+      containers:
+        - name: web
+          image: rglz0/sprea-web:latest
+          ports:
+            - containerPort: 3000

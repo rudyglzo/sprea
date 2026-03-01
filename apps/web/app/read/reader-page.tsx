@@ -7,9 +7,9 @@ import styles from "./reader-page.module.css";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const WPM_STORAGE_KEY = "sprea-reader-wpm";
 const DEFAULT_WPM = 300;
-const MIN_WPM = 100;
-const MAX_WPM = 600;
-const WPM_STEP = 50;
+const MIN_WPM = 50;
+const MAX_WPM = 1000;
+const WPM_STEP = 10;
 
 function getWords(text: string): string[] {
   return text
@@ -153,43 +153,81 @@ export function ReaderPage({
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <Link href="/" className={styles.backLink}>
-          ← Sprea
-        </Link>
         <div className={styles.controls}>
-          <label className={styles.wpmLabel}>
-            <span className={styles.wpmText}>Speed (WPM)</span>
-            <input
-              type="range"
-              min={MIN_WPM}
-              max={MAX_WPM}
-              step={WPM_STEP}
-              value={wpm}
-              onChange={(e) => persistWpm(Number(e.target.value))}
-              className={styles.slider}
-              aria-label="Words per minute"
-            />
-            <span className={styles.wpmValue} aria-live="polite">
-              {wpm}
-            </span>
-          </label>
-          <button
-            type="button"
-            onClick={restart}
-            className={styles.secondaryButton}
-            aria-label="Restart from beginning"
-          >
-            Restart
-          </button>
-          <button
-            type="button"
-            onClick={togglePlay}
-            className={styles.primaryButton}
-            aria-label={playing ? "Pause" : "Play"}
-            aria-pressed={playing}
-          >
-            {playing ? "Pause" : "Play"}
-          </button>
+          <div className={styles.controlsLeft}>
+            <Link href="/" className={styles.backLink}>
+              ← Sprea
+            </Link>
+          </div>
+          <div className={styles.controlsCenter}>
+            <div className={styles.speedControls}>
+              <label className={styles.wpmLabel}>
+                <span className={styles.wpmText}>Speed (WPM)</span>
+                <input
+                  type="range"
+                  min={MIN_WPM}
+                  max={MAX_WPM}
+                  step={WPM_STEP}
+                  value={wpm}
+                  onChange={(e) => persistWpm(Number(e.target.value))}
+                  className={styles.slider}
+                  aria-label="Words per minute"
+                />
+                <span className={styles.wpmValue} aria-live="polite">
+                  {wpm}
+                </span>
+              </label>
+              <div className={styles.speedPresets}>
+                <button
+                  type="button"
+                  className={`${styles.speedPreset} ${styles.speedPresetSlow}`}
+                  onClick={() => persistWpm(150)}
+                >
+                  Slow
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.speedPreset} ${styles.speedPresetNormal}`}
+                  onClick={() => persistWpm(300)}
+                >
+                  Normal
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.speedPreset} ${styles.speedPresetFast}`}
+                  onClick={() => persistWpm(500)}
+                >
+                  Fast
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.speedPreset} ${styles.speedPresetTurbo}`}
+                  onClick={() => persistWpm(800)}
+                >
+                  Turbo
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className={styles.controlsRight}>
+            <button
+              type="button"
+              onClick={restart}
+              className={styles.secondaryButton}
+              aria-label="Restart from beginning"
+            >
+              Restart
+            </button>
+            <button
+              type="button"
+              onClick={togglePlay}
+              className={styles.primaryButton}
+              aria-label={playing ? "Pause" : "Play"}
+              aria-pressed={playing}
+            >
+              {playing ? "Pause" : "Play"}
+            </button>
+          </div>
         </div>
         <p className={styles.progress} aria-live="polite">
           {displayIndex + 1} / {words.length} · {Math.min(progress, 100)}%
