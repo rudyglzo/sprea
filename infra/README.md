@@ -53,9 +53,9 @@ docker compose up --build
 
 Deploy to k3s. See **[k3s/README.md](k3s/README.md)**.
 
-## Step 5: CI/CD (coming next)
+## Step 5: CI/CD
 
-GitHub Actions: build on push → push images → deploy to cluster.
+GitHub Actions builds images, pushes to Docker Hub, and deploys to k3s. See **[cicd/README.md](cicd/README.md)** for secrets setup.
 
 ## Prerequisites
 
