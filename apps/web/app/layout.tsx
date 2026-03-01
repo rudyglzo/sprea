@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { GeistSans } from "geist/font/sans";
 import { MouseGlow } from "./components/mouse-glow";
 import { ThemeToggle } from "./components/theme-toggle";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   title: "Sprea — Read faster than you can think",
