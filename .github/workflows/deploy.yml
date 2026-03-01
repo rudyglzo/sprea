@@ -10,12 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verify secrets
+        run: |
+          [ -n "${{ secrets.DOCKERHUB_USERNAME }}" ] || (echo "DOCKERHUB_USERNAME is empty" && exit 1)
+          [ -n "${{ secrets.DOCKERHUB_TOKEN }}" ] || (echo "DOCKERHUB_TOKEN is empty" && exit 1)
+          echo "Secrets OK"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
+          registry: https://index.docker.io/v1/
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
