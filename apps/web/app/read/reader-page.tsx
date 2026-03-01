@@ -110,9 +110,9 @@ export function ReaderPage({
   if (status === "empty" && !id) {
     return (
       <div className={styles.container}>
-        <p className={styles.message}>No document selected.</p>
+        <p className={styles.message}>no document selected.</p>
         <Link href="/" className={styles.backLink}>
-          Upload a document
+          upload a document
         </Link>
       </div>
     );
@@ -121,7 +121,7 @@ export function ReaderPage({
   if (status === "loading") {
     return (
       <div className={styles.container}>
-        <p className={styles.message}>Loading…</p>
+        <p className={styles.message}>loading…</p>
       </div>
     );
   }
@@ -133,7 +133,7 @@ export function ReaderPage({
           {error}
         </p>
         <Link href="/" className={styles.backLink}>
-          Back to upload
+          back to upload
         </Link>
       </div>
     );
@@ -142,9 +142,9 @@ export function ReaderPage({
   if (status === "empty" || words.length === 0) {
     return (
       <div className={styles.container}>
-        <p className={styles.message}>No text to display.</p>
+        <p className={styles.message}>no text to display.</p>
         <Link href="/" className={styles.backLink}>
-          Upload another document
+          upload another document
         </Link>
       </div>
     );
@@ -156,13 +156,13 @@ export function ReaderPage({
         <div className={styles.controls}>
           <div className={styles.controlsLeft}>
             <Link href="/" className={styles.backLink}>
-              ← Sprea
+              ← sprea
             </Link>
           </div>
           <div className={styles.controlsCenter}>
             <div className={styles.speedControls}>
               <label className={styles.wpmLabel}>
-                <span className={styles.wpmText}>Speed (WPM)</span>
+                <span className={styles.wpmText}>speed (wpm)</span>
                 <input
                   type="range"
                   min={MIN_WPM}
@@ -183,28 +183,28 @@ export function ReaderPage({
                   className={`${styles.speedPreset} ${styles.speedPresetSlow}`}
                   onClick={() => persistWpm(150)}
                 >
-                  Slow
+                  slow
                 </button>
                 <button
                   type="button"
                   className={`${styles.speedPreset} ${styles.speedPresetNormal}`}
                   onClick={() => persistWpm(300)}
                 >
-                  Normal
+                  normal
                 </button>
                 <button
                   type="button"
                   className={`${styles.speedPreset} ${styles.speedPresetFast}`}
                   onClick={() => persistWpm(500)}
                 >
-                  Fast
+                  fast
                 </button>
                 <button
                   type="button"
                   className={`${styles.speedPreset} ${styles.speedPresetTurbo}`}
                   onClick={() => persistWpm(800)}
                 >
-                  Turbo
+                  turbo
                 </button>
               </div>
             </div>
@@ -216,7 +216,7 @@ export function ReaderPage({
               className={styles.secondaryButton}
               aria-label="Restart from beginning"
             >
-              Restart
+              restart
             </button>
             <button
               type="button"
@@ -225,7 +225,7 @@ export function ReaderPage({
               aria-label={playing ? "Pause" : "Play"}
               aria-pressed={playing}
             >
-              {playing ? "Pause" : "Play"}
+              {playing ? "pause" : "play"}
             </button>
           </div>
         </div>
