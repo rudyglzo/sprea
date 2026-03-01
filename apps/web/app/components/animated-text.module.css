@@ -1,0 +1,115 @@
+.wrapper {
+  display: inline;
+}
+
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: wordPop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.word:not(:last-child) {
+  margin-right: 0.3em;
+}
+
+@keyframes wordPop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RSVP cycle: one word at a time */
+.cycleWrapper {
+  display: block;
+  min-height: 1.5em;
+  position: relative;
+}
+
+.cycleWord {
+  position: absolute;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.cycleWrapper .cycleWord {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cycleLeft .cycleWord {
+  left: 0;
+  transform: none;
+}
+
+/* JS-driven cycle: single word at a time, correct order */
+.cycleSingle .cycleWord {
+  animation: cycleWordFade 0.3s ease-out;
+  opacity: 1;
+}
+
+@keyframes cycleWordFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 6 words: read, faster, than, you, can, think (in order) - CSS fallback */
+.cycleWords6 .cycleWord {
+  animation: wordCycle6 7.2s infinite;
+}
+.cycleWords6 .cycleWord:nth-child(1) { animation-delay: 0s; }
+.cycleWords6 .cycleWord:nth-child(2) { animation-delay: 1.2s; }
+.cycleWords6 .cycleWord:nth-child(3) { animation-delay: 2.4s; }
+.cycleWords6 .cycleWord:nth-child(4) { animation-delay: 3.6s; }
+.cycleWords6 .cycleWord:nth-child(5) { animation-delay: 4.8s; }
+.cycleWords6 .cycleWord:nth-child(6) { animation-delay: 6s; }
+
+@keyframes wordCycle6 {
+  0% { opacity: 1; }
+  16.67% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* 5 words */
+.cycleWords5 .cycleWord {
+  animation: wordCycle5 6s infinite;
+}
+.cycleWords5 .cycleWord:nth-child(1) { animation-delay: 0s; }
+.cycleWords5 .cycleWord:nth-child(2) { animation-delay: 1.2s; }
+.cycleWords5 .cycleWord:nth-child(3) { animation-delay: 2.4s; }
+.cycleWords5 .cycleWord:nth-child(4) { animation-delay: 3.6s; }
+.cycleWords5 .cycleWord:nth-child(5) { animation-delay: 4.8s; }
+
+@keyframes wordCycle5 {
+  0% { opacity: 1; }
+  20% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* 2 words */
+.cycleWords2 .cycleWord {
+  animation: wordCycle2 2.4s infinite;
+}
+.cycleWords2 .cycleWord:nth-child(1) { animation-delay: 0s; }
+.cycleWords2 .cycleWord:nth-child(2) { animation-delay: 1.2s; }
+
+@keyframes wordCycle2 {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* 3 words */
+.cycleWords3 .cycleWord {
+  animation: wordCycle3 3.6s infinite;
+}
+.cycleWords3 .cycleWord:nth-child(1) { animation-delay: 0s; }
+.cycleWords3 .cycleWord:nth-child(2) { animation-delay: 1.2s; }
+.cycleWords3 .cycleWord:nth-child(3) { animation-delay: 2.4s; }
+
+@keyframes wordCycle3 {
+  0% { opacity: 1; }
+  33.33% { opacity: 0; }
+  100% { opacity: 0; }
+}

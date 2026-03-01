@@ -14,6 +14,7 @@ class IngestTextBody(BaseModel):
     text: str
 
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".tiff", ".bmp"}
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
 
 def get_ext(filename: str) -> str:
@@ -63,7 +64,18 @@ async def ingest(file: UploadFile = File(...)):
             detail=f"Unsupported file type. Allowed: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
         )
     content_id = str(uuid4())
-    raw = await file.read()
+    raw = b""
+    chunk_size = 1024 * 1024  # 1MB
+    while True:
+        chunk = await file.read(chunk_size)
+        if not chunk:
+            break
+        raw += chunk
+        if len(raw) > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024 * 1024)}MB.",
+            )
     try:
         text = extract_text(raw, ext, file.content_type or "")
     except Exception as e:
