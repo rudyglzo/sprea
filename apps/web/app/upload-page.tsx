@@ -7,6 +7,7 @@ import styles from "./upload-page.module.css";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const ACCEPT = ".pdf,.docx,.doc,.png,.jpg,.jpeg,.gif,.webp,.tiff,.bmp";
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const GRANTED_ID_KEY = "sprea-granted-id";
 
 type Status = "idle" | "uploading" | "success" | "error";
 
@@ -21,6 +22,9 @@ export function UploadPage() {
 
   const navigateToRead = useCallback(
     (id: string) => {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem(GRANTED_ID_KEY, id);
+      }
       router.push(`/read?id=${encodeURIComponent(id)}`);
     },
     [router]

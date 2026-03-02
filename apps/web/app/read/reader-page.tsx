@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./reader-page.module.css";
+
+const GRANTED_ID_KEY = "sprea-granted-id";
 
 function RewindIcon() {
   return (
@@ -65,6 +68,7 @@ export function ReaderPage({
 }: {
   searchParams: Promise<{ id?: string }>;
 }) {
+  const router = useRouter();
   const [id, setId] = useState<string | null>(null);
   const [words, setWords] = useState<string[]>([]);
   const [index, setIndex] = useState(0);
@@ -76,6 +80,14 @@ export function ReaderPage({
   useEffect(() => {
     searchParams.then((p) => p.id && setId(p.id));
   }, [searchParams]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !id) return;
+    const granted = sessionStorage.getItem(GRANTED_ID_KEY);
+    if (granted !== id) {
+      router.replace("/");
+    }
+  }, [id, router]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
